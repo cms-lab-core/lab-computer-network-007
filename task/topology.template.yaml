@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frr-r1-config
+  namespace: $NAME
+data:
+  daemons: |-
+    zebra=yes
+    bgpd=no
+    ospfd=no
+    ospf6d=no
+    ripd=no
+    ripngd=no
+    isisd=no
+    pimd=no
+    ldpd=no
+    nhrpd=no
+    eigrpd=no
+    babeld=no
+    sharpd=no
+    pbrd=no
+    bfdd=no
+    fabricd=no
+    vrrpd=no
+    pathd=no
+    staticd=yes
+    
+    vtysh_enable=yes
+    zebra_options="-A 127.0.0.1 -s 90000000"
+    staticd_options="-A 127.0.0.1"
+    
+  frr.conf: |-
+    frr version 10.7.1
+    frr defaults traditional
+    hostname r1
+    log stdout informational
+    service integrated-vtysh-config
+    !
+    end
+    
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frr-r2-config
+  namespace: $NAME
+data:
+  daemons: |-
+    zebra=yes
+    bgpd=no
+    ospfd=no
+    ospf6d=no
+    ripd=no
+    ripngd=no
+    isisd=no
+    pimd=no
+    ldpd=no
+    nhrpd=no
+    eigrpd=no
+    babeld=no
+    sharpd=no
+    pbrd=no
+    bfdd=no
+    fabricd=no
+    vrrpd=no
+    pathd=no
+    staticd=yes
+    
+    vtysh_enable=yes
+    zebra_options="-A 127.0.0.1 -s 90000000"
+    staticd_options="-A 127.0.0.1"
+    
+  frr.conf: |-
+    frr version 10.7.1
+    frr defaults traditional
+    hostname r2
+    log stdout informational
+    service integrated-vtysh-config
+    !
+    end
+    
+---
+apiVersion: c9s.run/v1alpha1
+kind: Topology
+metadata:
+  name: $NAME
+  namespace: $NAME
+spec:
+  expose:
+    exposeType: ClusterIP
+  deployment:
+    filesFromConfigMap:
+      r1:
+        - filePath: configs/r1/daemons
+          configMapName: frr-r1-config
+          configMapPath: daemons
+          mode: read
+        - filePath: configs/r1/frr.conf
+          configMapName: frr-r1-config
+          configMapPath: frr.conf
+          mode: read
+      r2:
+        - filePath: configs/r2/daemons
+          configMapName: frr-r2-config
+          configMapPath: daemons
+          mode: read
+        - filePath: configs/r2/frr.conf
+          configMapName: frr-r2-config
+          configMapPath: frr.conf
+          mode: read
+  naming: non-prefixed
+  definition:
+    containerlab: |-
+      name: $NAME
+      topology:
+        defaults:
+          labels:
+            flow_direction: LR
+        groups:
+          routers:
+            kind: linux
+            image: quay.io/frrouting/frr:containerlab-10.7.1
+          hosts:
+            kind: linux
+            image: ghcr.io/nicolaka/netshoot:v0.16
+        nodes:
+          pc1:
+            group: hosts
+            labels:
+              flow_icon: pc
+            exec:
+              - /bin/sh -c "adduser -D -s /bin/sh admin 2>/dev/null || true"
+              - /bin/sh -c "echo admin:admin | chpasswd"
+              - ssh-keygen -A
+              - mkdir -p /run/sshd
+              - /bin/sh -c "echo PasswordAuthentication=yes >> /etc/ssh/sshd_config"
+              - /usr/sbin/sshd
+          r1:
+            group: routers
+            labels:
+              flow_icon: router
+            binds:
+              - configs/r1/daemons:/etc/frr/daemons
+              - configs/r1/frr.conf:/etc/frr/frr.conf
+            exec:
+              - /bin/sh -c "echo admin:admin | chpasswd"
+              - sysctl -w net.ipv4.ip_forward=1
+          r2:
+            group: routers
+            labels:
+              flow_icon: router
+            binds:
+              - configs/r2/daemons:/etc/frr/daemons
+              - configs/r2/frr.conf:/etc/frr/frr.conf
+            exec:
+              - /bin/sh -c "echo admin:admin | chpasswd"
+              - sysctl -w net.ipv4.ip_forward=1
+          pc2:
+            group: hosts
+            labels:
+              flow_icon: pc
+            exec:
+              - /bin/sh -c "adduser -D -s /bin/sh admin 2>/dev/null || true"
+              - /bin/sh -c "echo admin:admin | chpasswd"
+              - ssh-keygen -A
+              - mkdir -p /run/sshd
+              - /bin/sh -c "echo PasswordAuthentication=yes >> /etc/ssh/sshd_config"
+              - /usr/sbin/sshd
+        links:
+          - endpoints: ["pc1:eth1", "r1:eth1"]
+          - endpoints: ["r1:eth2", "r2:eth1"]
+          - endpoints: ["r2:eth2", "pc2:eth1"]
