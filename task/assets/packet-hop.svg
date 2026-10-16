@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="650" viewBox="0 0 1500 650" role="img" aria-labelledby="title desc">
+<title id="title">Сохранение IP source destination и уменьшение TTL при пересылке через R1 R2</title>
+<desc id="desc">На трёх Ethernet-сегментах IP 10.7.10.10 to 10.7.20.10 сохраняется, TTL уменьшается у каждого маршрутизатора. L2 source destination заменяются для очередного линка.</desc>
+<rect width="1500" height="650" fill="#ffffff"/>
+<style>
+text{font-family:DejaVu Sans,Arial,sans-serif;fill:#20314b}
+.title{font-size:32px;font-weight:700}.sub{font-size:19px;fill:#596a80}
+.head{font-size:24px;font-weight:700}.mono{font-family:DejaVu Sans Mono,monospace;font-size:20px}
+.card{fill:#f8faff;stroke:#4f71ba;stroke-width:2.5}.ether{fill:#e5edff}.ip{fill:#dff5ec}
+.hop{fill:#eaf9f1;stroke:#4b9677;stroke-width:2}
+.flow{stroke:#2b609f;stroke-width:5;stroke-dasharray:15 12}
+</style>
+<text class="title" x="750" y="58" text-anchor="middle">Один IP-пакет, три разных Ethernet-кадра</text>
+<text class="sub" x="750" y="99" text-anchor="middle">Пример TTL при исходном значении 64. Значение на вашем хосте может отличаться.</text>
+<rect class="card" x="66" y="148" width="410" height="288" rx="20"/>
+<text class="head" x="271" y="198" text-anchor="middle">LAN A · pc1 → R1</text>
+<rect class="ether" x="94" y="228" width="353" height="63" rx="12"/>
+<text class="sub" x="271" y="254" text-anchor="middle">Ethernet destination</text>
+<text class="mono" x="271" y="281" text-anchor="middle">MAC r1:eth1</text>
+<rect class="ip" x="94" y="309" width="353" height="98" rx="12"/>
+<text class="mono" x="271" y="347" text-anchor="middle">IP pc1 → pc2</text>
+<text class="mono" x="271" y="382" text-anchor="middle">TTL = 64</text>
+<rect class="hop" x="510" y="262" width="100" height="67" rx="12"/>
+<text class="head" x="560" y="305" text-anchor="middle">R1</text>
+
+<rect class="card" x="644" y="148" width="410" height="288" rx="20"/>
+<text class="head" x="849" y="198" text-anchor="middle">Transit · R1 → R2</text>
+<rect class="ether" x="672" y="228" width="353" height="63" rx="12"/>
+<text class="sub" x="849" y="254" text-anchor="middle">Ethernet destination</text>
+<text class="mono" x="849" y="281" text-anchor="middle">MAC r2:eth1</text>
+<rect class="ip" x="672" y="309" width="353" height="98" rx="12"/>
+<text class="mono" x="849" y="347" text-anchor="middle">IP pc1 → pc2</text>
+<text class="mono" x="849" y="382" text-anchor="middle">TTL = 63</text>
+<rect class="hop" x="1070" y="262" width="100" height="67" rx="12"/>
+<text class="head" x="1120" y="305" text-anchor="middle">R2</text>
+
+<rect class="card" x="1200" y="148" width="265" height="288" rx="20"/>
+<text class="head" x="1332" y="198" text-anchor="middle">LAN B · R2 → pc2</text>
+<rect class="ether" x="1216" y="228" width="233" height="63" rx="12"/>
+<text class="sub" x="1332" y="254" text-anchor="middle">Eth destination</text>
+<text class="mono" x="1332" y="281" text-anchor="middle">MAC pc2</text>
+<rect class="ip" x="1216" y="309" width="233" height="98" rx="12"/>
+<text class="mono" x="1332" y="347" text-anchor="middle">IP pc1 → pc2</text>
+<text class="mono" x="1332" y="382" text-anchor="middle">TTL = 62</text>
+
+<text class="head" x="750" y="510" text-anchor="middle">Переход router hop: −1 TTL, новый L2 header, IP endpoints те же</text>
+<text class="sub" x="750" y="562" text-anchor="middle">ARP ищет MAC next hop внутри конкретного L2-сегмента; не выясняет MAC удалённого pc2 на LAN A.</text>
+<text class="sub" x="750" y="603" text-anchor="middle">В PCAP на transit r1:eth2 можно изучить TTL после первого router hop.</text>
+</svg>

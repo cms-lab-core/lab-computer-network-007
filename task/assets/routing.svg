@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1640" height="690" viewBox="0 0 1640 690" role="img" aria-labelledby="title desc">
+<title id="title">Lab 007: PC1 — R1 — R2 — PC2, два маршрутизатора и три линка</title>
+<desc id="desc">PC1 10.7.10.10/24 через router R1 10.7.10.1/24 и 10.7.12.1/30, router R2 10.7.12.2/30 и 10.7.20.1/24 к PC2 10.7.20.10/24. Между routers транзит 10.7.12.0/30.</desc>
+<rect width="1640" height="690" fill="#ffffff"/>
+<style>
+text{font-family:DejaVu Sans,Arial,sans-serif;fill:#1b2a42}
+.title{font-size:36px;font-weight:700}.sub{font-size:19px;fill:#566c89}
+.node{fill:#f7faff;stroke:#4e76be;stroke-width:3}
+.router{fill:#effbf6;stroke:#238769;stroke-width:3}
+.name{font-size:29px;font-weight:700}.mono{font-family:DejaVu Sans Mono,monospace;font-size:17px}
+.route{stroke:#315fd1;stroke-width:7;stroke-linecap:round}
+.route2{stroke:#1c8b6a;stroke-width:7;stroke-linecap:round}
+.label{fill:#edf2ff;stroke:#a5bbf5;stroke-width:1.5}
+.track{stroke:#ed9746;stroke-width:4;stroke-linecap:round;stroke-dasharray:18 12}
+.packet{fill:#f3943e;stroke:#9a4913;stroke-width:2;animation:travel 8s ease-in-out infinite}
+@keyframes travel{0%{transform:translateX(0);opacity:.2}10%{opacity:1}85%{opacity:1}100%{transform:translateX(1120px);opacity:.2}}
+</style>
+<text class="title" x="820" y="59" text-anchor="middle">Lab 007 · пакет выбирает следующий hop на каждом router</text>
+<text class="sub" x="820" y="98" text-anchor="middle">Путь PC1 → R1 → R2 → PC2; обратное направление требует отдельной маршрутизации.</text>
+
+<line class="route" x1="382" y1="326" x2="475" y2="326"/>
+<line class="route2" x1="795" y1="326" x2="845" y2="326"/>
+<line class="route" x1="1165" y1="326" x2="1258" y2="326"/>
+
+<rect class="node" x="72" y="233" width="310" height="187" rx="22"/>
+<text class="name" x="227" y="284" text-anchor="middle">PC1</text>
+<text class="mono" x="227" y="325" text-anchor="middle">10.7.10.10/24</text>
+<text class="sub" x="227" y="375" text-anchor="middle">eth1 · LAN A</text>
+
+<rect class="router" x="475" y="215" width="320" height="222" rx="22"/>
+<text class="name" x="635" y="269" text-anchor="middle">R1 · FRR</text>
+<text class="mono" x="635" y="313" text-anchor="middle">eth1 10.7.10.1/24</text>
+<text class="mono" x="635" y="349" text-anchor="middle">eth2 10.7.12.1/30</text>
+<text class="sub" x="635" y="398" text-anchor="middle">static → 10.7.12.2</text>
+
+<rect class="router" x="845" y="215" width="320" height="222" rx="22"/>
+<text class="name" x="1005" y="269" text-anchor="middle">R2 · FRR</text>
+<text class="mono" x="1005" y="313" text-anchor="middle">eth1 10.7.12.2/30</text>
+<text class="mono" x="1005" y="349" text-anchor="middle">eth2 10.7.20.1/24</text>
+<text class="sub" x="1005" y="398" text-anchor="middle">static → 10.7.12.1</text>
+
+<rect class="node" x="1258" y="233" width="310" height="187" rx="22"/>
+<text class="name" x="1413" y="284" text-anchor="middle">PC2</text>
+<text class="mono" x="1413" y="325" text-anchor="middle">10.7.20.10/24</text>
+<text class="sub" x="1413" y="375" text-anchor="middle">eth1 · LAN B</text>
+
+<rect class="label" x="252" y="469" width="337" height="58" rx="13"/>
+<text class="mono" x="420" y="505" text-anchor="middle">LAN A · 10.7.10.0/24</text>
+<rect class="label" x="648" y="469" width="342" height="58" rx="13"/>
+<text class="mono" x="819" y="505" text-anchor="middle">Transit · 10.7.12.0/30</text>
+<rect class="label" x="1050" y="469" width="337" height="58" rx="13"/>
+<text class="mono" x="1218" y="505" text-anchor="middle">LAN B · 10.7.20.0/24</text>
+
+<line class="track" x1="260" y1="582" x2="1380" y2="582"/>
+<rect class="packet" x="251" y="569" width="34" height="26" rx="8"/>
+<text class="sub" x="820" y="645" text-anchor="middle">Анимированный пакет иллюстрирует путь. MAC/Ethernet header обновляется на каждом L2-сегменте.</text>
+</svg>

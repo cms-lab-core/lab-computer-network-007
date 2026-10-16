@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1510" height="720" viewBox="0 0 1510 720" role="img" aria-labelledby="title desc">
+<title id="title">Longest prefix match: более специфичная /32 Null0 побеждает /24 via R2 и default /0</title>
+<desc id="desc">Адрес назначения 10.7.20.10. Три совпадающих префикса: 0.0.0.0/0, 10.7.20.0/24 через 10.7.12.2, 10.7.20.10/32 в Null0. Самый длинный /32 выбирается первым.</desc>
+<rect width="1510" height="720" fill="white"/>
+<style>
+text{font-family:DejaVu Sans,Arial,sans-serif;fill:#20344d}
+.title{font-size:35px;font-weight:700}.sub{font-size:20px;fill:#56677b}.body{font-size:23px}
+.mono{font-family:DejaVu Sans Mono,monospace;font-size:22px}
+.card{fill:#f7f9fe;stroke:#cbd7ed;stroke-width:2.2}.bad{fill:#fff1e6;stroke:#d97a38;stroke-width:3}
+.good{fill:#e4f6ed;stroke:#3b9674;stroke-width:2.2}
+.head{font-size:25px;font-weight:700}.red{fill:#9c451b;font-weight:700}
+.blue{fill:#234f9f}
+.pulse{animation:pulse 4s ease-in-out infinite;transform-origin:center}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.75}}
+</style>
+<text class="title" x="755" y="58" text-anchor="middle">R1 выбирает маршрут для 10.7.20.10</text>
+<text class="sub" x="755" y="99" text-anchor="middle">Все три prefix подходят, но больший prefix length = более конкретное совпадение.</text>
+
+<rect class="card" x="105" y="155" width="1300" height="107" rx="19"/>
+<text class="mono blue" x="157" y="205">0.0.0.0/0</text>
+<text class="body" x="660" y="205">fallback/default</text>
+<text class="sub" x="1287" y="205" text-anchor="end">0 общих бит</text>
+<rect class="card good" x="105" y="290" width="1300" height="107" rx="19"/>
+<text class="mono blue" x="157" y="340">10.7.20.0/24</text>
+<text class="body" x="660" y="340">via 10.7.12.2 · R2</text>
+<text class="sub" x="1287" y="340" text-anchor="end">24 общих бита</text>
+<rect class="bad pulse" x="105" y="427" width="1300" height="117" rx="19"/>
+<text class="mono red" x="157" y="483">10.7.20.10/32</text>
+<text class="body red" x="660" y="483">Null0 · DROP</text>
+<text class="sub" x="1287" y="483" text-anchor="end">32 общих бита</text>
+
+<text class="head" x="755" y="604" text-anchor="middle">Победитель = /32, даже если правильный /24 всё ещё существует</text>
+<text class="sub" x="755" y="646" text-anchor="middle">Удаляем /32 Null0 → снова выбирается /24 через R2 → ping восстанавливается</text>
+<text class="sub" x="755" y="686" text-anchor="middle">Administrative distance сравнивается для кандидатов к одному destination prefix, а не вместо LPM.</text>
+</svg>
